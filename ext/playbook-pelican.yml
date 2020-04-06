@@ -1,0 +1,21 @@
+---
+- name : Installation Pelican
+  hosts: all
+  user: vagrant
+  gather_facts: No
+  become: yes 
+  vars:
+    - username: vagrant
+    - home_dir: "/home/{{ username }}"
+  tasks:
+    - name: Install aptitude using apt
+      apt: name=aptitude state=present update_cache=yes force_apt_get=yes
+    
+    - name: Install required for pelican system packages
+      apt: name={{ item }} state=present update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'python-pip', 'virtualenv', 'python3-setuptools']
+      
+     
+    - name: pelican
+      pip: name={{ item }} state=latest 
+      loop: [ 'pelican', 'markdown' ]
